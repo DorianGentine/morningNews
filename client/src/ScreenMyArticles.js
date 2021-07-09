@@ -53,10 +53,16 @@ function ScreenMyArticles() {
       </div>
   )
 
+  //A SUPPRIMER !!
+  const user = {language: 'fr'}
+
   return (
     <div>
       <Nav />
-      <div className="Banner" />
+      <div className="Banner">
+      <img className={user.language === "fr" ? "active" : ""} style={{height: "60px", margin: "0 5px"}} src="/images/fr.png" alt="frenchSources" />
+         <img className={user.language === "en" ? "active" : ""} style={{height: "60px", margin: "0 5px"}} src="/images/uk.png" alt="englishSources" />
+      </div>
       <div className="Card">
         {articleWishlist.length === 0 ?
           <Empty style={{marginTop: "30px"}}/> 

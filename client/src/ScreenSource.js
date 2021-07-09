@@ -3,13 +3,33 @@ import './App.css';
 import { List, Avatar} from 'antd';
 import { Link } from 'react-router-dom';
 import Nav from './Nav'
+import {useSelector, useDispatch} from 'react-redux'
 
 function ScreenSource() {
+  const dispatch = useDispatch()
 
+  const user = useSelector(state => state.user)
   const [sourceList, setSourceList] = useState([]);
 
-  const loadSources = async (language = "fr", country = "fr") => {
-    const request = await fetch(`/load-sources?language=${language}&country=${country}`)
+  const loadSources = async (language, country) => {
+    if(language && country){
+      const request = await fetch(`/users/change-language/${user.token}`, {
+        method: "POST",
+        headers: { "Content-Type":"application/json"},
+        body: JSON.stringify({
+          language: language,
+          country: country
+        })
+      })
+      const response = await request.json()
+      dispatch({
+        type: "saveUser",
+        user: response.user
+      })
+      console.log(`response`, response)
+    }
+
+    const request = await fetch(`/load-sources/${user.token}`)
     const response = await request.json()
     console.log(`response`, response)
     setSourceList(response.sources)
@@ -26,8 +46,8 @@ function ScreenSource() {
         <Nav/>
        
        <div className="Banner">
-         <img style={{height: "60px", margin: "0 5px"}} onClick={()=> loadSources()} src="/images/fr.png" alt="frenchSources" />
-         <img style={{height: "60px", margin: "0 5px"}} onClick={()=> loadSources('en', 'gb')} src="/images/uk.png" alt="englishSources" />
+         <img className={user.language === "fr" ? "active" : ""} style={{height: "60px", margin: "0 5px"}} onClick={()=> loadSources('fr', 'fr')} src="/images/fr.png" alt="frenchSources" />
+         <img className={user.language === "en" ? "active" : ""} style={{height: "60px", margin: "0 5px"}} onClick={()=> loadSources('en', 'gb')} src="/images/uk.png" alt="englishSources" />
        </div>
 
        <div className="HomeThemes">

@@ -9,6 +9,22 @@ router.get('/', function(req, res, next) {
   res.send('respond with a resource');
 });
 
+router.post('/change-language/:token', async (req, res)=>{
+  const user = await UserModel.findOne({token: req.params.token})
+  if(!user){
+    res.json({result: false, error: 'No user found'})
+  }else{
+    user.language = req.body.language
+    user.country = req.body.country
+    const userSaved = await user.save()
+    res.json({result: true, user:{
+      firstname: userSaved.firstname,
+      token: userSaved.token,
+      language: userSaved.language
+    }})
+  }
+})
+
 router.post('/sign-in', async (req, res) => {
   if(req.body.email && req.body.password){
     const user = await UserModel.findOne({email: req.body.email})
@@ -18,7 +34,8 @@ router.post('/sign-in', async (req, res) => {
       if (bcrypt.compareSync(req.body.password, user.password)) {
         res.json({ result: true, user:{
           firstname: user.firstname,
-          token: user.token
+          token: user.token,
+          language: user.language
         } });
       } else {
         res.json({ result: false, error: "Le mot de passe ou le mail sont incorrects" });
@@ -40,11 +57,14 @@ router.post('/sign-up', async (req, res) => {
       const hash = bcrypt.hashSync(req.body.password, 10);
       newUser.password = hash
       newUser.token = uid2(32)
+      newUser.language = 'fr'
+      newUser.country = 'fr'
       console.log(`newUser`, newUser)
       const userSaved = await newUser.save()
       res.json({result: true, user: {
         firstname: userSaved.firstname,
-        token: userSaved.token
+        token: userSaved.token,
+        language: userSaved.language
       }})
     }
   }else{
