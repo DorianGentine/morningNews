@@ -86,14 +86,15 @@ const deleteArticle = async (article) => {
     <div>
       <Nav />
       <div className="Banner">
-        <img className={user.language === "fr" ? "active" : ""} style={{height: "60px", margin: "0 5px"}} onClick={()=> filter("fr")} src="/images/fr.png" alt="frenchSources" />
-        <img className={user.language === "en" ? "active" : ""} style={{height: "60px", margin: "0 5px"}} onClick={()=> filter("en")} src="/images/uk.png" alt="englishSources" />
+        <img className={language === "" ? "active" : ""} style={{height: "60px", margin: "0 5px"}} onClick={()=> setLanguage("")} src="/images/banner.png" alt="frenchSources" />
+        <img className={language === "fr" ? "active" : ""} style={{height: "60px", margin: "0 5px"}} onClick={()=> setLanguage("fr")} src="/images/fr.png" alt="frenchSources" />
+        <img className={language === "en" ? "active" : ""} style={{height: "60px", margin: "0 5px"}} onClick={()=> setLanguage("en")} src="/images/uk.png" alt="englishSources" />
       </div>
       <div className="Card">
         {articleWishlist && articleWishlist.length !== 0 ?
-         renderArticles
+          renderArticles
         : 
-        <Empty style={{marginTop: "30px"}}/>
+          <Empty style={{marginTop: "30px"}}/>
         }
       </div>
       <Modal title={modalArticle.title} visible={isModalVisible} onOk={handleOk} footer={[
