@@ -1,14 +1,29 @@
-import React, {useState} from 'react';
+import React, {useState , useEffect} from 'react';
 import './App.css';
 import { Card, Icon, Empty, Modal, Button } from 'antd';
 import Nav from './Nav'
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector, useDispatch} from 'react-redux';
 
 const { Meta } = Card;
 
 function ScreenMyArticles() {
-  const articleWishlist = useSelector(state => state.articleWishlist)
+  //const articleWishlist = useSelector(state => state.articleWishlist)
+  const [articleWishlist , setArticleWishlist] = useState([])
+  const user = useSelector(state=>state.user)
+  useEffect(()=>{
+    async function articleBd(){
+      const request = await fetch (`/my-articles/${user.token}`)
+      const response = await request.json()
+      console.log(response); 
+      setArticleWishlist(response.articles)
+    } 
+    articleBd();
+  }, [] )
+  
   const dispatch = useDispatch()
+
+
+
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [modalArticle, setModalArticle] = useState({})
   const showModal = article => {
@@ -33,13 +48,13 @@ function ScreenMyArticles() {
           cover={
             <img
               alt="example"
-              src={article.img}
+              src={article.urlToImage}
             />
 
           }
           actions={[
             <Icon type="read" key="ellipsis2" onClick={() => showModal(article)} />,
-            <Icon type="delete" key="ellipsis" onClick={()=> dispatch({ 
+            <Icon type="delete" key="ellipsis" onClick={()=> dispatch({
               type: "deleteToWishList", 
               title: article.title
             })}/>
@@ -58,10 +73,10 @@ function ScreenMyArticles() {
       <Nav />
       <div className="Banner" />
       <div className="Card">
-        {articleWishlist.length === 0 ?
-          <Empty style={{marginTop: "30px"}}/> 
+        {articleWishlist && articleWishlist.length !== 0 ?
+         renderArticles
         : 
-          renderArticles 
+        <Empty style={{marginTop: "30px"}}/>
         }
       </div>
       <Modal title={modalArticle.title} visible={isModalVisible} onOk={handleOk} footer={[

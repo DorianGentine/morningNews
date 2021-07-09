@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 // import './App.css';
 import { Card, Icon, Modal, Button } from 'antd';
-import {useDispatch} from 'react-redux'
+import {useDispatch, useSelector} from 'react-redux'
 
 const { Meta } = Card;
 
@@ -14,6 +14,27 @@ function MyCard({i, item}) {
   const handleOk = () => {
     setIsModalVisible(false);
   };
+  const user = useSelector(state=>state.user)
+  const addArticleToWishList = async () => {
+    const request = await fetch (`/save-article/${user.token}`, {
+      method : 'POST',
+      headers: {"Content-Type" : 'application/json'},
+      body : JSON.stringify(item)
+    })
+
+    const response = await request.json()
+    console.log(response);
+
+    dispatch({ 
+      type: "addArticle", 
+      article: {
+        img: item.urlToImage,
+        title: item.title, 
+        description: item.description, 
+        content: item.content
+      }
+    })
+  }
 
   return (
     <Card
@@ -27,15 +48,7 @@ function MyCard({i, item}) {
       cover={<img alt="example" src={item.urlToImage} />}
       actions={[
           <Icon type="read" key="ellipsis2" onClick={showModal} />,
-          <Icon type="like" key="ellipsis" onClick={()=> dispatch({ 
-            type: "addArticle", 
-            article: {
-              img: item.urlToImage,
-              title: item.title, 
-              description: item.description, 
-              content: item.content
-            } 
-          })}/>
+          <Icon type="like" key="ellipsis" onClick={addArticleToWishList}/> 
       ]}
       >
         <Meta

@@ -18,7 +18,8 @@ router.post('/sign-in', async (req, res) => {
       if (bcrypt.compareSync(req.body.password, user.password)) {
         res.json({ result: true, user:{
           firstname: user.firstname,
-          token: user.token
+          token: user.token,
+          articles: user.articles
         } });
       } else {
         res.json({ result: false, error: "Le mot de passe ou le mail sont incorrects" });
@@ -44,7 +45,8 @@ router.post('/sign-up', async (req, res) => {
       const userSaved = await newUser.save()
       res.json({result: true, user: {
         firstname: userSaved.firstname,
-        token: userSaved.token
+        token: userSaved.token,
+        articles: user.articles
       }})
     }
   }else{
