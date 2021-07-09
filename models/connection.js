@@ -5,7 +5,7 @@ const options = {
  useNewUrlParser: true,
  useUnifiedTopology : true
 }
-mongoose.connect('mongodb+srv://doriangtn:cegej9AbEXJh6h4@lacapsule.u7hei.mongodb.net/morningnews?retryWrites=true&w=majority',
+mongoose.connect( process.env.MONGO_URL,
    options,        
    function(err) {
 			err ? console.log(err) : console.log('Connection réussie !');

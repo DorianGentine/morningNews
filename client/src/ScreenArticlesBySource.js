@@ -10,12 +10,7 @@ function ScreenArticlesBySource() {
   const [articleList, setArticleList] = useState([])
   useEffect(()=>{
     const loadArticles = async () => {
-      const myHeaders = new Headers({
-        "Authorization": "b77cb7e8bf4d45c79fc3f0286d06822a",
-      });
-      const request = await fetch(`https://newsapi.org/v2/top-headlines?sources=${id}`, {
-        headers: myHeaders
-      })
+      const request = await fetch(`/load-article?id=${id}`)
       const response = await request.json()
       setArticleList(response.articles)
     }

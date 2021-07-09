@@ -9,13 +9,9 @@ function ScreenSource() {
   const [sourceList, setSourceList] = useState([]);
 
   const loadSources = async (language = "fr", country = "fr") => {
-    const myHeaders = new Headers({
-      "Authorization": "b77cb7e8bf4d45c79fc3f0286d06822a",
-    });
-    const request = await fetch(`https://newsapi.org/v2/sources?language=${language}&country=${country}`, {
-      headers: myHeaders
-    })
+    const request = await fetch(`/load-sources?language=${language}&country=${country}`)
     const response = await request.json()
+    console.log(`response`, response)
     setSourceList(response.sources)
   }
 
