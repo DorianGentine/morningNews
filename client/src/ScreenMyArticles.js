@@ -1,14 +1,39 @@
-import React, {useState} from 'react';
+import React, {useState , useEffect} from 'react';
 import './App.css';
 import { Card, Icon, Empty, Modal, Button } from 'antd';
 import Nav from './Nav'
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector, useDispatch} from 'react-redux';
 
 const { Meta } = Card;
 
 function ScreenMyArticles() {
-  const articleWishlist = useSelector(state => state.articleWishlist)
+  //const articleWishlist = useSelector(state => state.articleWishlist)
+  const [articleWishlist , setArticleWishlist] = useState([])
+  const user = useSelector(state=>state.user)
+  useEffect(()=>{
+    async function articleBd(){
+      const request = await fetch (`/my-articles/${user.token}`)
+      const response = await request.json()
+      console.log(response); 
+      setArticleWishlist(response.articles)
+    } 
+    articleBd();
+  }, [] )
+  
   const dispatch = useDispatch()
+
+const deleteArticle = async (article) => {
+    const request = await fetch(`/delete/${user.token}/${article.title}`, {method:'DELETE'})
+    const response = await request.json()
+    console.log(response);
+    setArticleWishlist(response.articles)
+    dispatch({
+      type: "deleteToWishList", 
+      title: article.title
+    });
+  }
+  
+
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [modalArticle, setModalArticle] = useState({})
   const showModal = article => {
@@ -23,7 +48,7 @@ function ScreenMyArticles() {
 
   const renderArticles = articleWishlist.map( (article, index) => {
     if(language === '' || language.includes(article.language)){
-      return(
+      return (
         <div key={index} style={{ display: 'flex', justifyContent: 'center' }}>
           <Card
             style={{
@@ -36,16 +61,13 @@ function ScreenMyArticles() {
             cover={
               <img
                 alt="example"
-                src={article.img}
+                src={article.urlToImage}
               />
-  
+
             }
             actions={[
               <Icon type="read" key="ellipsis2" onClick={() => showModal(article)} />,
-              <Icon type="delete" key="ellipsis" onClick={()=> dispatch({ 
-                type: "deleteToWishList", 
-                title: article.title
-              })}/>
+              <Icon type="delete" key="ellipsis" onClick={() => deleteArticle(article)}/>
             ]}
           >
             <Meta
@@ -54,12 +76,11 @@ function ScreenMyArticles() {
             />
           </Card>
         </div>
-      )
-    }
+      )  
+    } 
   })
 
-  //A SUPPRIMER !!
-  const user = {language: 'fr'}
+  
 
   return (
     <div>
@@ -69,10 +90,10 @@ function ScreenMyArticles() {
         <img className={user.language === "en" ? "active" : ""} style={{height: "60px", margin: "0 5px"}} onClick={()=> filter("en")} src="/images/uk.png" alt="englishSources" />
       </div>
       <div className="Card">
-        {articleWishlist.length === 0 ?
-          <Empty style={{marginTop: "30px"}}/> 
+        {articleWishlist && articleWishlist.length !== 0 ?
+         renderArticles
         : 
-          renderArticles 
+        <Empty style={{marginTop: "30px"}}/>
         }
       </div>
       <Modal title={modalArticle.title} visible={isModalVisible} onOk={handleOk} footer={[

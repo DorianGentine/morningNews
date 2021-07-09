@@ -20,6 +20,7 @@ router.post('/change-language/:token', async (req, res)=>{
     res.json({result: true, user:{
       firstname: userSaved.firstname,
       token: userSaved.token,
+      articles:userSaved.articles,
       language: userSaved.language
     }})
   }
@@ -35,6 +36,7 @@ router.post('/sign-in', async (req, res) => {
         res.json({ result: true, user:{
           firstname: user.firstname,
           token: user.token,
+          articles: user.articles,
           language: user.language
         } });
       } else {
@@ -64,7 +66,8 @@ router.post('/sign-up', async (req, res) => {
       res.json({result: true, user: {
         firstname: userSaved.firstname,
         token: userSaved.token,
-        language: userSaved.language
+        articles: userSaved.articles,
+        language: userSaved.language,
       }})
     }
   }else{
