@@ -19,39 +19,44 @@ function ScreenMyArticles() {
     setIsModalVisible(false);
   };
 
-  const renderArticles = articleWishlist.map( (article, index) => 
-    
-      <div key={index} style={{ display: 'flex', justifyContent: 'center' }}>
-        <Card
-          style={{
-            width: 300,
-            margin: '15px',
-            display: 'flex',
-            flexDirection: 'column',
-            justifyContent: 'space-between'
-          }}
-          cover={
-            <img
-              alt="example"
-              src={article.img}
-            />
+  const [language, setLanguage] = useState('');
 
-          }
-          actions={[
-            <Icon type="read" key="ellipsis2" onClick={() => showModal(article)} />,
-            <Icon type="delete" key="ellipsis" onClick={()=> dispatch({ 
-              type: "deleteToWishList", 
-              title: article.title
-            })}/>
-          ]}
-        >
-          <Meta
-            title={article.title}
-            description={article.description}
-          />
-        </Card>
-      </div>
-  )
+  const renderArticles = articleWishlist.map( (article, index) => {
+    if(language === '' || language.includes(article.language)){
+      return(
+        <div key={index} style={{ display: 'flex', justifyContent: 'center' }}>
+          <Card
+            style={{
+              width: 300,
+              margin: '15px',
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'space-between'
+            }}
+            cover={
+              <img
+                alt="example"
+                src={article.img}
+              />
+  
+            }
+            actions={[
+              <Icon type="read" key="ellipsis2" onClick={() => showModal(article)} />,
+              <Icon type="delete" key="ellipsis" onClick={()=> dispatch({ 
+                type: "deleteToWishList", 
+                title: article.title
+              })}/>
+            ]}
+          >
+            <Meta
+              title={article.title}
+              description={article.description}
+            />
+          </Card>
+        </div>
+      )
+    }
+  })
 
   //A SUPPRIMER !!
   const user = {language: 'fr'}
@@ -60,8 +65,8 @@ function ScreenMyArticles() {
     <div>
       <Nav />
       <div className="Banner">
-      <img className={user.language === "fr" ? "active" : ""} style={{height: "60px", margin: "0 5px"}} src="/images/fr.png" alt="frenchSources" />
-         <img className={user.language === "en" ? "active" : ""} style={{height: "60px", margin: "0 5px"}} src="/images/uk.png" alt="englishSources" />
+        <img className={user.language === "fr" ? "active" : ""} style={{height: "60px", margin: "0 5px"}} onClick={()=> filter("fr")} src="/images/fr.png" alt="frenchSources" />
+        <img className={user.language === "en" ? "active" : ""} style={{height: "60px", margin: "0 5px"}} onClick={()=> filter("en")} src="/images/uk.png" alt="englishSources" />
       </div>
       <div className="Card">
         {articleWishlist.length === 0 ?
