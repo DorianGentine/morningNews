@@ -12,6 +12,7 @@ function ScreenArticlesBySource() {
     const loadArticles = async () => {
       const request = await fetch(`/load-article?id=${id}`)
       const response = await request.json()
+      console.log(`response`, response)
       setArticleList(response.articles)
     }
     loadArticles()

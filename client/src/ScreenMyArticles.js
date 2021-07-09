@@ -22,7 +22,17 @@ function ScreenMyArticles() {
   
   const dispatch = useDispatch()
 
-
+const deleteArticle = async (article) => {
+    const request = await fetch(`/delete/${user.token}/${article.title}`, {method:'DELETE'})
+    const response = await request.json()
+    console.log(response);
+    setArticleWishlist(response.articles)
+    dispatch({
+      type: "deleteToWishList", 
+      title: article.title
+    });
+  }
+  
 
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [modalArticle, setModalArticle] = useState({})
@@ -34,8 +44,8 @@ function ScreenMyArticles() {
     setIsModalVisible(false);
   };
 
-  const renderArticles = articleWishlist.map( (article, index) => 
-    
+  const renderArticles = articleWishlist.map( (article, index) => {
+    return (
       <div key={index} style={{ display: 'flex', justifyContent: 'center' }}>
         <Card
           style={{
@@ -54,10 +64,7 @@ function ScreenMyArticles() {
           }
           actions={[
             <Icon type="read" key="ellipsis2" onClick={() => showModal(article)} />,
-            <Icon type="delete" key="ellipsis" onClick={()=> dispatch({
-              type: "deleteToWishList", 
-              title: article.title
-            })}/>
+            <Icon type="delete" key="ellipsis" onClick={() => deleteArticle(article)}/>
           ]}
         >
           <Meta
@@ -66,12 +73,18 @@ function ScreenMyArticles() {
           />
         </Card>
       </div>
-  )
+    )   
+  })
+
+  
 
   return (
     <div>
       <Nav />
-      <div className="Banner" />
+      <div className="Banner">
+      <img className={user.language === "fr" ? "active" : ""} style={{height: "60px", margin: "0 5px"}} src="/images/fr.png" alt="frenchSources" />
+         <img className={user.language === "en" ? "active" : ""} style={{height: "60px", margin: "0 5px"}} src="/images/uk.png" alt="englishSources" />
+      </div>
       <div className="Card">
         {articleWishlist && articleWishlist.length !== 0 ?
          renderArticles

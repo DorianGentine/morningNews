@@ -5,6 +5,7 @@ const articleSchema = mongoose.Schema({
   urlToImage: String,
   description: String,
   content: String,
+  language :String,
 });
 
 
@@ -14,7 +15,9 @@ const userSchema = mongoose.Schema({
   email: String,
   password: String,
   token: String,
-  articles: [articleSchema]
+  articles: [articleSchema],
+  language: String,
+  country: String,
 });
 
 const UserModel = mongoose.model('users', userSchema);
